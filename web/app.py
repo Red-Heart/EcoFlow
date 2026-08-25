@@ -35,6 +35,8 @@ OUTPUT_FOLDER = os.path.join(BASE_DIR, "static", "outputs")
 LOG_FOLDER = os.path.join(BASE_DIR, "logs")
 MODEL_PATH = os.path.join(PROJECT_DIR, "Roboflow", "runs", "detect", "train-7", "weights", "best.pt")
 
+FFMPEG_PATH = shutil.which("ffmpeg") or r"C:\ffmpeg\bin\ffmpeg.exe"
+
 ALLOWED_EXTENSIONS = {"mp4", "avi", "mov", "mkv"}
 IMG_SIZE = 640
 DEVICE = 0 if torch.cuda.is_available() else "cpu"
@@ -167,7 +169,7 @@ def read_log_for_chart(log_path):
 
 def start_ffmpeg_writer(output_path, width, height, fps):
     cmd = [
-        "ffmpeg", "-y",
+        FFMPEG_PATH, "-y",
         "-f", "rawvideo",
         "-vcodec", "rawvideo",
         "-pix_fmt", "bgr24",
