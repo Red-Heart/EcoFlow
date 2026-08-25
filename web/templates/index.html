@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>EcoFlow - Upload Video</title>
+<style>
+    body { font-family: Arial, sans-serif; background: #0f1117; color: #eee; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+    .card { background: #1a1d27; padding: 40px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.4); text-align: center; width: 420px; }
+    h1 { color: #4ade80; margin-bottom: 4px; }
+    p { color: #999; font-size: 14px; margin-bottom: 24px; }
+    label { display: block; text-align: left; font-size: 13px; color: #ccc; margin-bottom: 6px; }
+    input[type=file], input[type=number] { width: 100%; padding: 12px; background: #12141c; border: 1px solid #333; border-radius: 8px; color: #eee; margin-bottom: 4px; box-sizing: border-box; }
+    .field { margin-bottom: 16px; }
+    button { width: 100%; padding: 12px; background: #4ade80; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 15px; }
+    button:hover { background: #22c55e; }
+    .loading { display: none; margin-top: 16px; color: #4ade80; font-size: 14px; }
+    .hint { font-size: 11px; color: #666; margin-bottom: 0; text-align: left; }
+</style>
+</head>
+<body>
+<div class="card">
+    <h1>EcoFlow</h1>
+    <p>Upload road footage to detect vehicles and estimate CO2 emissions</p>
+    <form id="uploadForm" action="/upload" method="post" enctype="multipart/form-data" onsubmit="showLoading()">
+        <div class="field">
+            <label for="video">Video file</label>
+            <input type="file" id="video" name="video" accept=".mp4,.avi,.mov,.mkv" required>
+        </div>
+        <div class="field">
+            <label for="log_interval">Emissions log interval (seconds)</label>
+            <input type="number" id="log_interval" name="log_interval" value="5" min="1" step="1" required>
+            <div class="hint">How often (in video time) a snapshot is written to the emissions CSV log.</div>
+        </div>
+        <div class="field">
+            <label for="conf_threshold">Detection confidence threshold</label>
+            <input type="number" id="conf_threshold" name="conf_threshold" value="0.55" min="0.01" max="0.99" step="0.01" required>
+            <div class="hint">Higher = fewer false positives but more missed vehicles. Lower = more detections but more noise.</div>
+        </div>
+        <button type="submit">Process Video</button>
+    </form>
+    <div class="loading" id="loadingMsg">Processing video... this may take a while depending on length.</div>
+</div>
+<script>
+function showLoading() {
+    document.getElementById('loadingMsg').style.display = 'block';
+}
+</script>
+</body>
+</html>

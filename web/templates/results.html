@@ -1,0 +1,470 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>EcoFlow - Results</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background: #0f1117;
+        color: #eee;
+        margin: 0;
+        padding: 40px;
+      }
+      .container {
+        max-width: 1000px;
+        margin: 0 auto;
+      }
+      h1 {
+        color: #4ade80;
+      }
+      h2 {
+        color: #eee;
+        font-size: 18px;
+        margin-top: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .video-wrap {
+        margin: 24px 0;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+      }
+      video {
+        width: 100%;
+        display: block;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+        margin: 24px 0;
+      }
+      .stat-card {
+        background: #1a1d27;
+        padding: 20px;
+        border-radius: 10px;
+        text-align: center;
+      }
+      .stat-card .label {
+        color: #999;
+        font-size: 13px;
+        text-transform: uppercase;
+      }
+      .stat-card .value {
+        font-size: 28px;
+        font-weight: bold;
+        margin-top: 6px;
+      }
+      .car {
+        color: #ffc800;
+      }
+      .motorcycle {
+        color: #ffa500;
+      }
+      .bus {
+        color: #00c800;
+      }
+      .truck {
+        color: #ff3232;
+      }
+      .total-box {
+        background: #1a1d27;
+        padding: 24px;
+        border-radius: 10px;
+        text-align: center;
+        margin-top: 16px;
+      }
+      .total-box .value {
+        font-size: 36px;
+        font-weight: bold;
+        color: #4ade80;
+      }
+
+      .risk-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+        margin: 16px 0 32px;
+      }
+      .risk-card {
+        background: #1a1d27;
+        padding: 18px;
+        border-radius: 10px;
+        text-align: center;
+        border: 2px solid transparent;
+      }
+      .risk-card .label {
+        color: #999;
+        font-size: 12px;
+        text-transform: uppercase;
+        margin-bottom: 8px;
+      }
+      .risk-badge {
+        display: inline-block;
+        padding: 6px 16px;
+        border-radius: 20px;
+        font-weight: bold;
+        font-size: 14px;
+      }
+      .risk-Low {
+        background: #14532d;
+        color: #4ade80;
+      }
+      .risk-Medium {
+        background: #78350f;
+        color: #fbbf24;
+      }
+      .risk-High {
+        background: #7c2d12;
+        color: #fb923c;
+      }
+      .risk-Critical {
+        background: #7f1d1d;
+        color: #f87171;
+      }
+
+      .chart-wrap {
+        background: #1a1d27;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 24px;
+      }
+
+      .download-chart-btn {
+        background: #2a2d3a;
+        color: #4ade80;
+        border: 1px solid #4ade80;
+        border-radius: 6px;
+        padding: 6px 14px;
+        font-size: 12px;
+        cursor: pointer;
+        font-weight: bold;
+      }
+      .download-chart-btn:hover {
+        background: #4ade80;
+        color: #0f1117;
+      }
+
+      a.button {
+        display: inline-block;
+        margin-top: 20px;
+        padding: 10px 20px;
+        background: #4ade80;
+        color: #0f1117;
+        text-decoration: none;
+        border-radius: 8px;
+        font-weight: bold;
+      }
+      a.back {
+        display: inline-block;
+        margin-top: 20px;
+        padding: 10px 20px;
+        color: #0f1117;
+        background-color: #ef4444;
+        text-decoration: none;
+        cursor: pointer;
+        border-radius: 8px;
+        font-weight: bold;
+      }
+
+      .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.65);
+        align-items: center;
+        justify-content: center;
+        z-index: 999;
+      }
+      .modal-box {
+        background: #1a1d27;
+        padding: 28px;
+        border-radius: 12px;
+        width: 380px;
+        text-align: center;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+        border: 1px solid #333;
+      }
+      .modal-box h3 {
+        margin-top: 0;
+        color: #f87171;
+      }
+      .modal-box p {
+        color: #ccc;
+        font-size: 14px;
+        line-height: 1.5;
+      }
+      .modal-actions {
+        display: flex;
+        gap: 12px;
+        margin-top: 20px;
+      }
+      .modal-btn {
+        flex: 1;
+        padding: 10px;
+        border: none;
+        border-radius: 8px;
+        font-weight: bold;
+        cursor: pointer;
+        font-size: 14px;
+      }
+      .modal-btn.cancel {
+        background: #2a2d3a;
+        color: #eee;
+      }
+      .modal-btn.confirm {
+        background: #f87171;
+        color: #1a1d27;
+      }
+      .modal-btn.confirm:hover {
+        background: #ef4444;
+      }
+      .modal-btn.cancel:hover {
+        background: #3a3d4a;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>EcoFlow Results</h1>
+      <p style="color: #999">
+        Source video: {{ video_name }} &nbsp;|&nbsp; Log interval: {{
+        log_interval_seconds }}s &nbsp;|&nbsp; Confidence: {{ conf_threshold }}
+      </p>
+
+      <div class="video-wrap">
+        <video controls autoplay muted>
+          <source
+            src="{{ url_for('serve_output', filename=output_video) }}"
+            type="video/mp4"
+          />
+        </video>
+      </div>
+
+      <div class="grid">
+        <div class="stat-card">
+          <div class="label">Cars</div>
+          <div class="value car">{{ class_counts.get('car', 0) }}</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">Motorcycles</div>
+          <div class="value motorcycle">
+            {{ class_counts.get('motorcycle', 0) }}
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="label">Buses</div>
+          <div class="value bus">{{ class_counts.get('bus', 0) }}</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">Trucks</div>
+          <div class="value truck">{{ class_counts.get('truck', 0) }}</div>
+        </div>
+      </div>
+
+      <div class="total-box">
+        <div class="label" style="color: #999">
+          Estimated Total CO2 Emissions
+        </div>
+        <div class="value">{{ total_kg }} kg</div>
+      </div>
+
+      <h2>Risk Assessment Matrix</h2>
+      <div class="risk-grid">
+        <div class="risk-card">
+          <div class="label">Environmental Risk</div>
+          <span class="risk-badge risk-{{ risk.environmental_risk }}"
+            >{{ risk.environmental_risk }}</span
+          >
+        </div>
+        <div class="risk-card">
+          <div class="label">Congestion Risk</div>
+          <span class="risk-badge risk-{{ risk.congestion_risk }}"
+            >{{ risk.congestion_risk }}</span
+          >
+        </div>
+        <div class="risk-card">
+          <div class="label">Hardware Risk</div>
+          <span class="risk-badge risk-{{ risk.hardware_risk }}"
+            >{{ risk.hardware_risk }}</span
+          >
+        </div>
+        <div class="risk-card">
+          <div class="label">Overall Risk</div>
+          <span class="risk-badge risk-{{ risk.overall_risk }}"
+            >{{ risk.overall_risk }}</span
+          >
+        </div>
+      </div>
+      <p style="color: #999; font-size: 13px">
+        Heavy vehicle ratio (bus+truck / total): {{
+        risk.details.heavy_vehicle_ratio }} &nbsp;|&nbsp; Total vehicles: {{
+        risk.details.total_vehicles }}
+      </p>
+
+      <h2>
+        Emissions Over Time
+        <button
+          class="download-chart-btn"
+          onclick="downloadChart('emissionsLineChart', '{{ video_name }}_emissions_over_time.png')"
+        >
+          Download PNG
+        </button>
+      </h2>
+      <div class="chart-wrap">
+        <canvas id="emissionsLineChart" height="90"></canvas>
+      </div>
+
+      <h2>
+        Emissions by Vehicle Class (Latest Snapshot)
+        <button
+          class="download-chart-btn"
+          onclick="downloadChart('classBarChart', '{{ video_name }}_emissions_by_class.png')"
+        >
+          Download PNG
+        </button>
+      </h2>
+      <div class="chart-wrap">
+        <canvas id="classBarChart" height="90"></canvas>
+      </div>
+
+      <a
+        class="button"
+        href="{{ url_for('download_log', filename=log_filename) }}"
+        >Download Emissions Log (CSV)</a
+      >
+      <a class="back" onclick="openDeleteModal()">Process another video</a>
+    </div>
+
+    <div class="modal-overlay" id="deleteModal">
+      <div class="modal-box">
+        <h3>Delete processed data?</h3>
+        <p>
+          Going back will permanently delete the uploaded video, the annotated
+          output video, and the emissions CSV log for
+          <strong>{{ video_name }}</strong>. Make sure you've downloaded
+          anything you need first.
+        </p>
+        <div class="modal-actions">
+          <button class="modal-btn cancel" onclick="closeDeleteModal()">
+            Cancel
+          </button>
+          <button class="modal-btn confirm" onclick="confirmDeleteAndGoBack()">
+            Delete &amp; Continue
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const chartData = {{ chart_data_json | safe }};
+      const chartInstances = {};
+      const baseName = {{ base_name | tojson }};
+      const indexUrl = {{ url_for('index') | tojson }};
+
+      const lineCtx = document.getElementById('emissionsLineChart').getContext('2d');
+      chartInstances.emissionsLineChart = new Chart(lineCtx, {
+          type: 'line',
+          data: {
+              labels: chartData.timestamps,
+              datasets: [{
+                  label: 'Total CO2 (kg)',
+                  data: chartData.totals,
+                  borderColor: '#4ade80',
+                  backgroundColor: 'rgba(74, 222, 128, 0.15)',
+                  fill: true,
+                  tension: 0.25,
+              }]
+          },
+          options: {
+              responsive: true,
+              plugins: { legend: { labels: { color: '#eee' } } },
+              scales: {
+                  x: { ticks: { color: '#999' }, grid: { color: '#2a2d3a' } },
+                  y: { ticks: { color: '#999' }, grid: { color: '#2a2d3a' } }
+              }
+          }
+      });
+
+      const lastIndex = chartData.totals.length - 1;
+      const barCtx = document.getElementById('classBarChart').getContext('2d');
+      chartInstances.classBarChart = new Chart(barCtx, {
+          type: 'bar',
+          data: {
+              labels: ['Car', 'Motorcycle', 'Bus', 'Truck'],
+              datasets: [{
+                  label: 'CO2 (kg)',
+                  data: lastIndex >= 0 ? [
+                      chartData.car[lastIndex],
+                      chartData.motorcycle[lastIndex],
+                      chartData.bus[lastIndex],
+                      chartData.truck[lastIndex]
+                  ] : [0, 0, 0, 0],
+                  backgroundColor: ['#ffc800', '#ffa500', '#00c800', '#ff3232'],
+              }]
+          },
+          options: {
+              responsive: true,
+              plugins: { legend: { display: false } },
+              scales: {
+                  x: { ticks: { color: '#999' }, grid: { color: '#2a2d3a' } },
+                  y: { ticks: { color: '#999' }, grid: { color: '#2a2d3a' } }
+              }
+          }
+      });
+
+      function downloadChart(chartId, filename) {
+          const chart = chartInstances[chartId];
+          if (!chart) return;
+
+          const sourceCanvas = chart.canvas;
+          const exportCanvas = document.createElement('canvas');
+          exportCanvas.width = sourceCanvas.width;
+          exportCanvas.height = sourceCanvas.height;
+          const ctx = exportCanvas.getContext('2d');
+          ctx.fillStyle = '#1a1d27';
+          ctx.fillRect(0, 0, exportCanvas.width, exportCanvas.height);
+          ctx.drawImage(sourceCanvas, 0, 0);
+
+          const link = document.createElement('a');
+          link.href = exportCanvas.toDataURL('image/png', 1.0);
+          link.download = filename;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+      }
+
+      function openDeleteModal() {
+          document.getElementById('deleteModal').style.display = 'flex';
+      }
+
+      function closeDeleteModal() {
+          document.getElementById('deleteModal').style.display = 'none';
+      }
+
+      async function confirmDeleteAndGoBack() {
+          try {
+              const resp = await fetch(`/cleanup/${encodeURIComponent(baseName)}`, { method: 'POST' });
+              const data = await resp.json();
+              if (data.errors && data.errors.length > 0) {
+                  console.warn('Some files could not be deleted:', data.errors);
+              }
+          } catch (e) {
+              console.error('Cleanup request failed:', e);
+          }
+          window.location.href = indexUrl;
+      }
+
+      document.getElementById('deleteModal').addEventListener('click', function(e) {
+          if (e.target === this) closeDeleteModal();
+      });
+    </script>
+  </body>
+</html>

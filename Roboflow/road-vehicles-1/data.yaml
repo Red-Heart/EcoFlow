@@ -1,0 +1,15 @@
+names:
+- car
+- motorcycle
+- bus
+- truck
+nc: 4
+roboflow:
+  license: CC BY 4.0
+  project: road-vehicles-h3m1y
+  url: https://universe.roboflow.com/srivalli-yada/road-vehicles-h3m1y/dataset/1
+  version: 1
+  workspace: srivalli-yada
+test: ../test/images
+train: ../train/images
+val: ../valid/images
